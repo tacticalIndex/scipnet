@@ -1,3 +1,3 @@
-from scipnet import run
+from scipnet import main
 
-run()
+main()

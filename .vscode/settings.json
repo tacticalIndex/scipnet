@@ -1,0 +1,15 @@
+/*{
+  "workbench.colorCustomizations": {
+    "editor.background": "#531111", // Dark background
+    "editor.foreground": "#4caf50", // White text
+    "editorLink.activeForeground": "#4caf50",
+    "activityBar.background": "#165B33", // Christmas green
+    "sideBar.background": "#bd301d", // Christmas red
+    "sideBarTitle.background": "#af1212",
+    "sideBarTitle.foreground": "#00a500",
+    "sideBarSectionHeader.background": "#af1212",
+    "sideBarSectionHeader.foreground": "#008800",
+    "list.hoverBackground": "#910000",
+    "list.hoverForeground": "#9c9c9c",
+  }
+}*/
