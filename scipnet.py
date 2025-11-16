@@ -24,9 +24,8 @@ async def main(uid):
     print("Name", user.name)
     print("Display Name:", user.display_name)
     print("Description:", user.description)
-
-
-asyncio.get_event_loop().run_until_complete(main())
+    
+asyncio.get_event_loop().run_until_complete(main(uid=5256141118))
 
 class Bot(commands.AutoShardedBot):
     time.sleep(3)
@@ -34,4 +33,4 @@ class Bot(commands.AutoShardedBot):
 def run():
     print("test")
 
-main(5256141118)
+main(uid=5256141118)
