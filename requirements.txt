@@ -4,3 +4,4 @@ aiohttp
 pymongo==4.15.4
 Flask
 dnspython
+requests
