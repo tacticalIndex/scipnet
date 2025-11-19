@@ -27,14 +27,21 @@ logging_channel = 1440554108502151329
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
+    latency = round(bot.latency * 1000)
+    print(f"Logged in as {bot.user} (ID: {bot.user.id}, Ping: {latency}ms)")
     try:
         channel = bot.get_channel(logging_channel)
         if not channel:
             channel = bot.fetch_channel(logging_channel)
         
         if channel:
-            channel.send("Bot online and ready to clank.")
+            latency = round(bot.latency * 1000)
+            embed = discord.Embed(
+                title="Bot online",
+                footer="Ping: {}".format(latency),
+                color=discord.Color.green()
+            )
+            channel.send(embed=embed)
         else:
             print(f"Logging channel not found. ({logging_channel})")
     except Exception as e:
