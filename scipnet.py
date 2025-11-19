@@ -7,30 +7,43 @@ import re
 from collections import defaultdict
 import os
 import asyncio
+import requests
 
 from discord import app_commands
 from discord.ext import tasks, commands
 from roblox import Client
 import discord.mentions
+from pymongo import MongoClient
 
 import aiohttp
 from pkgutil import iter_modules
 from collections import defaultdict
 
-roblox = Client()
+#Bot start up!!!
+token = os.getenv("DISCORD_BOT_TOKEN")
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix=":", intents=intents)
+logging_channel = 1440554108502151329
 
-async def main(uid):
-    user = await roblox.get_user(uid)
-    print("Name", user.name)
-    print("Display Name:", user.display_name)
-    print("Description:", user.description)
-    
-asyncio.get_event_loop().run_until_complete(main(uid=5256141118))
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
+    try:
+        channel = bot.get_channel(logging_channel)
+        if not channel:
+            channel = bot.fetch_channel(logging_channel)
+        
+        if channel:
+            channel.send("Bot online and ready to clank.")
+        else:
+            print(f"Logging channel not found. ({logging_channel})")
+    except Exception as e:
+        print(f"❌ Error sending message to channel ({logging_channel}). `{e}`")
 
-class Bot(commands.AutoShardedBot):
-    time.sleep(3)
+@bot.tree.command(name="testing", description="Obvious what this does 🙄")
+async def testing(interaction: discord.Interaction):
+    interaction.response.send_message("PLEASE WORK")
 
-def run():
-    print("test")
-
-main(uid=5256141118)
+@bot.hybrid_command(name="maybetesting")
+async def maybetesting(ctx: commands.Context, member: discord.Member):
+    ctx.send("hi")
