@@ -14,7 +14,7 @@ from discord.ext import tasks, commands
 from roblox import Client
 import discord.mentions
 from pymongo import MongoClient
-from hosting import keep_alive
+#from hosting import keep_alive
 
 import aiohttp
 from pkgutil import iter_modules
@@ -56,5 +56,5 @@ async def testing(interaction: discord.Interaction):
 async def maybetesting(ctx: commands.Context, member: discord.Member):
     ctx.send("hi")
 
-keep_alive()
+#keep_alive()
 bot.run(token)

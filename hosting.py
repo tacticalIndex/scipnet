@@ -1,4 +1,4 @@
-from flask import Flask
+"""from flask import Flask
 from threading import Thread
 import os
 
@@ -17,4 +17,4 @@ def run_flask():
 
 def keep_alive():
     t = Thread(target=run_flask, daemon=True)
-    t.start()
+    t.start()"""
