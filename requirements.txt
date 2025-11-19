@@ -2,6 +2,6 @@ discord.py==2.6.0
 roblox==2.0.0
 aiohttp
 pymongo==4.15.4
-Flask==2.3.3
+gunicorn
 dnspython
 requests

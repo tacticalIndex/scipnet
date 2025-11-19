@@ -42,7 +42,7 @@ async def on_ready():
                 footer="Ping: {}".format(latency),
                 color=discord.Color.green()
             )
-            channel.send(embed=embed)
+            await channel.send(embed=embed)
         else:
             print(f"Logging channel not found. ({logging_channel})")
     except Exception as e:
