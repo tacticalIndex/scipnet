@@ -14,6 +14,7 @@ from discord.ext import tasks, commands
 from roblox import Client
 import discord.mentions
 from pymongo import MongoClient
+from hosting import keep_alive
 
 import aiohttp
 from pkgutil import iter_modules
@@ -28,7 +29,7 @@ logging_channel = 1440554108502151329
 @bot.event
 async def on_ready():
     latency = round(bot.latency * 1000)
-    print(f"Logged in as {bot.user} (ID: {bot.user.id}, Ping: {latency}ms)")
+    print(f"Logged in as {bot.user} (ID: {bot.user.id} | Ping: {latency}ms)")
     try:
         channel = bot.get_channel(logging_channel)
         if not channel:
@@ -54,3 +55,6 @@ async def testing(interaction: discord.Interaction):
 @bot.hybrid_command(name="maybetesting")
 async def maybetesting(ctx: commands.Context, member: discord.Member):
     ctx.send("hi")
+
+keep_alive()
+bot.run(token)
