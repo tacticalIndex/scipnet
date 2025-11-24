@@ -22,7 +22,7 @@ from pkgutil import iter_modules
 from collections import defaultdict
 
 #Bot start up!!!
-token = "MTQxMTE4ODI0MTYyMDUzNzQ0Ng.GKhVM7.D7a4Ip1_Pkj3Vu0d3HgZkIJlccdcrdO1Mq2ZAU" #os.getenv("DISCORD_BOT_TOKEN")
+token = os.getenv("DISCORD_BOT_TOKEN")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
