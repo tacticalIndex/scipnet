@@ -1,4 +1,6 @@
-/*{
+{
+  "remote.autoForwardPortsFallback": 0
+}/*{
   "workbench.colorCustomizations": {
     "editor.background": "#531111", // Dark background
     "editor.foreground": "#4caf50", // White text
