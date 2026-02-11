@@ -6,3 +6,6 @@ gunicorn
 Flask==2.3.3
 dnspython
 requests
+motor==3.1.1
+python-dotenv==1.2.1
+jishaku==2.6.3

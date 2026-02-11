@@ -10,6 +10,7 @@ import asyncio
 import requests
 import logging
 from motor.motor_asyncio import AsyncIOMotorClient
+from dotenv import load_dotenv
 
 import discord
 from discord import app_commands
@@ -24,7 +25,7 @@ import aiohttp
 from pkgutil import iter_modules
 from collections import defaultdict
 import jishaku
-from mongo import PreferencesManager
+from utils.mongo import PreferencesManager
 
 #Bot start up!!!
 token = os.getenv("DISCORD_BOT_TOKEN")
@@ -34,7 +35,7 @@ logging_channel = 1440554108502151329
 
 # Start functions
 
-def sendLogMessage(bot: commands.Bot, message: str, title: str):
+async def sendLogMessage(bot: commands.Bot, message: str, title: str):
     """
     Sends a log message to the specified logging channel.
 
@@ -55,7 +56,7 @@ def sendLogMessage(bot: commands.Bot, message: str, title: str):
                 color=discord.Color.yellow()
             )
             embed.set_footer(text="Log Message")
-            asyncio.create_task(channel.send(embed=embed))
+            await channel.send(embed=embed)
         else:
             print(f"Logging channel not found. ({logging_channel})")
     except Exception as e:
@@ -108,25 +109,6 @@ async def on_message_delete(message): # Placeholder to notify owner when a user 
             guild.owner.send(embed=embed)
             sendLogMessage(bot, f"Log Message deleted by {author} ({author.id}), Authorized Administrators have been notified.", "Member Deleted Log Message")
 
-
-@bot.tree.command(name="testing", description="Obvious what this does 🙄")
-async def testing(interaction: discord.Interaction):
-    res = interaction.response
-    await res.send_message("PLEASE WORK")
-
-
-@bot.hybrid_command(name="maybetesting")
-async def maybetesting(ctx, member: discord.Member):
-    if member is None:
-        ctx.send("Please mention a member.")
-    embed = discord.Embed(
-        title="**Testing!!!**",
-        color=discord.Color.green()
-    )
-    embed.set_footer(text="This is a footer")
-    embed.set_author(name="This is an author line")
-    await ctx.send(embed=embed)
-
 @bot.hybrid_command(name="dm", description="Sends a DM to a user")
 async def dm(ctx, member: discord.Member, *, message: str):
     try:
@@ -175,7 +157,7 @@ async def info(ctx):
             pass  # Link buttons do not need a callback
         
     embed = discord.Embed(
-        title="**SciPNet Help**",
+        title="**SCiPNET Help**",
         description="Here is some information about the bot:",
         color=discord.Color.blue()
     )
