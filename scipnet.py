@@ -28,6 +28,7 @@ import jishaku
 from utils.mongo import PreferencesManager
 
 #Bot start up!!!
+load_dotenv()
 token = os.getenv("DISCORD_BOT_TOKEN")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
@@ -166,5 +167,38 @@ async def info(ctx):
     embed.set_footer(text="SCiPNET | Secure Containment Internet Protocol Network")
     await ctx.send(embed=embed, view=MyView) # Placeholder for future views
 
-#keep_alive()
+@tasks.loop(minutes=1)
+async def potaNotify(bot):
+    try:
+        r = requests.get("https://api.pota.app/spot/activator")
+        data = r.json()
+        spots = []
+        fields = []
+        
+        for spot in data:
+            frequency = spot["frequency"]
+            ping = True if frequency >= 28000 and frequency <= 28500 else False
+            if "US" in spot["reference"]:
+                spots.append(spot)
+        if spots:
+            channel = bot.get_channel(1440554108502151329)
+            for spot in spots:
+                if spot["reference"] and spot["frequency"] and spot["mode"]:
+                    fields.append(f"**Reference:** {spot['reference']}\n**Frequency:** {spot['frequency']} kHz\n**Mode:** {spot['mode']}")
+            embed = discord.Embed(
+                title="POTA Activator Spots Detected",
+                description="\n\n".join(fields),
+                color=discord.Color.orange()
+            )
+            embed.set_footer(text="Data provided by POTA API")
+            if ping == True:
+                await channel.send(content=f"<@${bot.owner_id}>", embed=embed)
+            elif ping == False:
+                await channel.send(embed=embed)
+    except Exception as e:
+        print(f"Error fetching POTA data: {e}")
+
+
+            
+
 bot.run(token)
