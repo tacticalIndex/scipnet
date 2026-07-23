@@ -1,3 +1,10 @@
+import discord
+from discord import app_commands
+from discord.ext import tasks, commands
+from discord.ui import View, Button
+from roblox import Client
+import discord.mentions
+
 import datetime
 import json
 import logging
@@ -12,12 +19,7 @@ import logging
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 
-import discord
-from discord import app_commands
-from discord.ext import tasks, commands
-from discord.ui import View, Button
-from roblox import Client
-import discord.mentions
+
 from pymongo import MongoClient
 #from hosting import keep_alive
 
@@ -33,6 +35,7 @@ token = os.getenv("DISCORD_BOT_TOKEN")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
+AREA16SERVERS = [1514273899427139614, 1517819138377257040, 1504334508780945498, 1500695775871504437, 1319320423619493971, 1372422304302108775]
 
 # Start functions
 
@@ -63,6 +66,69 @@ async def sendLogMessage(bot: commands.Bot, message: str, title: str):
     except Exception as e:
         print(f"❌ Error sending message to channel ({logging_channel}). `{e}`")
 
+@bot.tree.command(name="blacklist", description="Blacklist a user from Area-16. Crossbans to all A16 servers.")
+@app_commands.describe(user_id="The user to blacklist.", reason="Reason for the Blacklist", appealable=bool)
+@app_commands.checks.has_permissions(administrator=True)
+async def blacklist(interaction: discord.Interaction, user_id: str, reason: str, appealable: bool):
+    await interaction.response.defer(ephemeral=True)
+    user = await bot.fetch_user(user_id)
+
+    if appealable==True:
+        reason += " | This action is appealable."
+    else:
+        reason += " | This action is not appealable."
+
+    embed=discord.Embed(
+        title="Blacklist Notice",
+        description=f"You have been blacklisted from Area-16 you will not be welcomed back into this community").set_footer(text=f"Reason: {reason}")
+
+    user.send(embed=embed)
+
+    for guild_id in AREA16SERVERS:
+        guild = bot.get_guild(guild_id)
+        if guild:
+            try:
+                if user:
+                    await guild.ban(user, reason=f"{user} has been banned for: {reason}")
+                    await sendLogMessage(bot, f"User {user} ({user.id}) has been blacklisted from Area-16 servers. Reason: {reason}", "User Blacklisted")
+                else:
+                    await interaction.followup.send(f"User with ID {user_id} not found.", ephemeral=True)
+            except discord.Forbidden:
+                await interaction.followup.send(f"Bot does not have permission to ban user with ID {user_id} in guild {guild.name}.", ephemeral=True)
+            except discord.HTTPException as e:
+                await interaction.followup.send(f"Failed to ban user with ID {user_id} in guild {guild.name}. Error: {e}", ephemeral=True)
+        else:
+            await interaction.followup.send(f"Guild with ID {guild_id} not found.", ephemeral=True)
+
+@bot.tree.command(name="unblacklist", description="Unblacklist a user from Area-16. Cross-unbans to all A16 servers.") 
+@app_commands.describe(user_id="The user to unblacklist.", reason="Reason for the Unblacklist")
+@app_commands.checks.has_permissions(administrator=True)
+async def unblacklist(interaction: discord.Interaction, user_id: str, reason: str):
+    await interaction.response.defer(ephemeral=True)
+    user = await bot.fetch_user(user_id)
+
+    embed=discord.Embed(
+        title="Unblacklist Notice",
+        description=f"You have been unblacklisted from Area-16 you are now welcomed back into this community").set_footer(text=f"Reason: {reason}")
+
+    user.send(embed=embed)
+
+    for guild_id in AREA16SERVERS:
+        guild = bot.get_guild(guild_id)
+        if guild:
+            try:
+                if user:
+                    await guild.unban(user, reason=f"{user} has been unbanned for: {reason}")
+                    await sendLogMessage(bot, f"User {user} ({user.id}) has been unblacklisted from Area-16 servers. Reason: {reason}", "User Unblacklisted")
+                else:
+                    await interaction.followup.send(f"User with ID {user_id} not found.", ephemeral=True)
+            except discord.Forbidden:
+                await interaction.followup.send(f"Bot does not have permission to unban user with ID {user_id} in guild {guild.name}.", ephemeral=True)
+            except discord.HTTPException as e:
+                await interaction.followup.send(f"Failed to unban user with ID {user_id} in guild {guild.name}. Error: {e}", ephemeral=True)
+        else:
+            await interaction.followup.send(f"Guild with ID {guild_id} not found.", ephemeral=True)
+
 @bot.event
 async def on_ready():
     latency = round(bot.latency * 1000)
@@ -86,6 +152,14 @@ async def on_ready():
             print(f"Logging channel not found. ({logging_channel})")
     except Exception as e:
         print(f"❌ Error sending message to channel ({logging_channel}). `{e}`")
+
+    for guild in AREA16SERVERS:
+        try:
+            guild_obj = bot.get_guild(guild)
+            bot.tree.copy_global_to(guild=guild_obj)
+            await bot.tree.sync(guild=guild_obj)
+        except discord.HTTPException:
+            sendLogMessage(bot, f"Failed to sync commands for guild {guild}.", "Command Sync Error")
     await bot.tree.sync()
 
 @bot.event
