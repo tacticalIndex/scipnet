@@ -1,11 +1,10 @@
-discord.py==2.6.0
+discord.py==2.7.1
 roblox==2.0.0
 aiohttp
-pymongo[srv]==4.15.4
+pymongo==4.15.4
 gunicorn
 Flask==2.3.3
 dnspython
 requests
-motor==3.1.1
 python-dotenv==1.2.1
 jishaku==2.6.3

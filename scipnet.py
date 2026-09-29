@@ -16,11 +16,10 @@ import os
 import asyncio
 import requests
 import logging
-from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
+from pymongo import AsyncMongoClient
+from pathlib import Path
 
-
-from pymongo import MongoClient
 #from hosting import keep_alive
 
 import aiohttp
@@ -32,22 +31,58 @@ from utils.mongo import PreferencesManager
 #Bot start up!!!
 load_dotenv()
 token = os.getenv("DISCORD_BOT_TOKEN")
+db_uri = os.getenv("MONGODB_URI")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
-AREA16SERVERS = [1514273899427139614, 1517819138377257040, 1504334508780945498, 1500695775871504437, 1319320423619493971, 1372422304302108775]
-
 # Start functions
 
+
+
+async def load_extensions():
+    """Scans cogs and loads the modules"""
+    cogs_dir = Path(__file__).parent / "cogs"
+
+    try:
+        await bot.load_extension("jishaku")
+        print("Jishaku loaded")
+    except Exception as e:
+        print(f"Failed to load Jishaku")
+
+    for file in cogs_dir.glob("*.py"):
+        if file.name == "__init__.py":
+            continue
+
+        cog_name = f"cogs.{file.stem}"
+        try:
+            await bot.load_extension(cog_name)
+            print(f"Successfully loaded cog: {cog_name}")
+        except Exception as e:
+            print(f"Failed to load cog: {cog_name} ({e})")
+
+@bot.event
+async def on_ready():
+    latency = round(bot.latency * 1000)
+    print(f"Logged in as {bot.user} (ID: {bot.user.id} | Ping: {latency}ms)")
+
+
+
+async def main():
+    async with bot:
+        await load_extensions()
+        await bot.start(token)
+
+
+
 async def sendLogMessage(bot: commands.Bot, message: str, title: str):
-    """
-    Sends a log message to the specified logging channel.
+    
+    """Sends a log message to the specified logging channel.
 
     Parameters:
         bot (commands.Bot): The discord bot instance.
         message (str): The log message to send.
-        title (str): The title of the log message.
-    """
+        title (str): The title of the log message."""
+    
     try:
         channel = bot.get_channel(logging_channel)
         if not channel:
@@ -66,7 +101,7 @@ async def sendLogMessage(bot: commands.Bot, message: str, title: str):
     except Exception as e:
         print(f"❌ Error sending message to channel ({logging_channel}). `{e}`")
 
-@bot.tree.command(name="blacklist", description="Blacklist a user from Area-16. Crossbans to all A16 servers.")
+"""@bot.tree.command(name="blacklist", description="Blacklist a user from Area-16. Crossbans to all A16 servers.")
 @app_commands.describe(user_id="The user to blacklist.", reason="Reason for the Blacklist", appealable=bool)
 @app_commands.checks.has_permissions(administrator=True)
 async def blacklist(interaction: discord.Interaction, user_id: str, reason: str, appealable: bool):
@@ -274,5 +309,6 @@ async def potaNotify(bot):
 
 
             
-
+"""
 bot.run(token)
+asyncio.run(main())
