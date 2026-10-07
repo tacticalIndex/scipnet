@@ -101,5 +101,5 @@ async def sendLogMessage(bot: commands.Bot, message: str, title: str):
     except Exception as e:
         print(f"❌ Error sending message to channel ({logging_channel}). `{e}`")
 
-discord.util.setup_logging()
+discord.utils.setup_logging()
 asyncio.run(main())
