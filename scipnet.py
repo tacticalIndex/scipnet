@@ -50,7 +50,7 @@ async def load_extensions():
         print(f"Failed to load Jishaku")
 
     for file in cogs_dir.rglob("*.py"):
-        if file.name == "__init__.py":
+        if file.name in {"__init__.py", "globalLogging.py"}:
             continue
 
         cog_name = ".".join(file.relative_to(cogs_dir.parent).with_suffix("").parts)
