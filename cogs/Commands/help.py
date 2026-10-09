@@ -30,7 +30,7 @@ class help(commands.GroupCog, name="help"):
 
     @app_commands.command(name="general", description="View Commands/Documentation")
     async def general_help_command(self, interaction: discord.Interaction):
-        await interaction.responce.send_message(
+        await interaction.response.send_message(
             embed=helpView.embed,
             view=helpView()
         )
