@@ -49,11 +49,11 @@ async def load_extensions():
     except Exception as e:
         print(f"Failed to load Jishaku")
 
-    for file in cogs_dir.glob("*.py"):
+    for file in cogs_dir.rglob("*.py"):
         if file.name == "__init__.py":
             continue
 
-        cog_name = f"cogs.{file.stem}"
+        cog_name = ".".join(file.relative_to(cogs_dir.parent).with_suffix("").parts)
         try:
             await bot.load_extension(cog_name)
             print(f"Successfully loaded cog: {cog_name}")

@@ -24,20 +24,16 @@ class helpView(discord.ui.view):
     embed.add_field(name="Commands", value="Use `/` to see the list of slash commands available.", inline=False)
     embed.set_footer(text="SCiPNET | Secure Containment Internet Protocol Network")
 
-class General(commands.GroupCog, name="general"):
-    def __init__(self, bot):
-        self.bot = bot
-        super().__init__()
+class help(commands.GroupCog, name="help"):
 
-    General = app_commands.Group(
-
-    )
-
-    @commands.hybrid_command(name="help", description="Get help relating to the bot's features")
-    async def help(self, ctx: commands.Context):
-        await ctx.send(View=helpView)
+    @app_commands.command(name="general", description="View Commands/Documentation")
+    async def general_help_command(self, interaction: discord.Interaction):
+        await interaction.responce.send_message(
+            embed=helpView.embed,
+            view=helpView()
+        )
 
 
 
 async def setup(bot):
-    await bot.add_cog(General(bot))
+    await bot.add_cog(help(bot))
