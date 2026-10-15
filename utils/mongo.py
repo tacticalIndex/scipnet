@@ -1,8 +1,9 @@
 import pymongo
+from bson import ObjectId
 
 class PreferencesManager:
     def __init__(self, mongo_uri: str, db_name: str = "scipnet", collection_name: str = "guilds"):
-        self.client = pymongo(mongo_uri)
+        self.client = pymongo.MongoClient(mongo_uri)
         self.db = self.client[db_name]
         self.collection = self.db[collection_name]
 
