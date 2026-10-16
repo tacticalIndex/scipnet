@@ -63,7 +63,7 @@ async def load_extensions():
 async def on_ready():
     latency = round(bot.latency * 1000)
     print(f"Logged in as {bot.user} (ID: {bot.user.id} | Ping: {latency}ms)")
-    send_log(LOGGING_CHANNEL, f"Bot is online! Ping: {latency}ms", "Bot Status", discord.Color.green())
+    send_log(bot, f"Bot is online! Ping: {latency}ms", "Bot Status", LOGGING_CHANNEL, discord.Color.green())
 
 
 
