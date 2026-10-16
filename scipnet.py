@@ -19,6 +19,7 @@ import logging
 from dotenv import load_dotenv
 from pymongo import AsyncMongoClient
 from pathlib import Path
+from utils.globalLogging import send_log
 
 #from hosting import keep_alive
 
@@ -30,14 +31,12 @@ from utils.mongo import PreferencesManager
 
 #Bot start up!!!
 load_dotenv()
-token = os.getenv("DISCORD_BOT_TOKEN")
-db_uri = os.getenv("MONGODB_URI")
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+DB_URI = os.getenv("MONGODB_URI")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
-logging_channel = 1440554108502151329
+LOGGING_CHANNEL = os.getenv("LOGGING_CHANNEL")
 # Start functions
-
-
 
 async def load_extensions():
     """Scans cogs and loads the modules"""
@@ -64,42 +63,14 @@ async def load_extensions():
 async def on_ready():
     latency = round(bot.latency * 1000)
     print(f"Logged in as {bot.user} (ID: {bot.user.id} | Ping: {latency}ms)")
+    send_log(LOGGING_CHANNEL, f"Bot is online! Ping: {latency}ms", "Bot Status", discord.Color.green())
 
 
 
 async def main():
     async with bot:
         await load_extensions()
-        await bot.start(token)
-
-
-
-async def sendLogMessage(bot: commands.Bot, message: str, title: str):
-    
-    """Sends a log message to the specified logging channel.
-
-    Parameters:
-        bot (commands.Bot): The discord bot instance.
-        message (str): The log message to send.
-        title (str): The title of the log message."""
-    
-    try:
-        channel = bot.get_channel(logging_channel)
-        if not channel:
-            channel = bot.fetch_channel(logging_channel)
-
-        if channel:
-            embed = discord.Embed(
-                title=title,
-                description=message,
-                color=discord.Color.yellow()
-            )
-            embed.set_footer(text="Log Message")
-            await channel.send(embed=embed)
-        else:
-            print(f"Logging channel not found. ({logging_channel})")
-    except Exception as e:
-        print(f"❌ Error sending message to channel ({logging_channel}). `{e}`")
+        await bot.start(TOKEN)
 
 discord.utils.setup_logging()
 asyncio.run(main())
