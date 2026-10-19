@@ -8,6 +8,7 @@ import discord.mentions
 import datetime
 import json
 import logging
+import logging.handlers
 import time
 from dataclasses import MISSING
 import re
@@ -35,7 +36,29 @@ db_uri = os.getenv("MONGODB_URI")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
+logger_file = os.getenv("LOGGER_FILE")
+logger = logging.getLogger("discord")
+logger.setLevel(logging.DEBUG)
+logging.getLogger("discord.http").setLevel(logging.WARNING)
+
+handler = logging.handlers.RotatingFileHandler(
+    filename=logger_file,
+    encoding="utf-8",
+    maxBytes=32 * 1024 * 1024,  # 32 MiB
+    backupCount=5,  # Keep up to 5 log files
+)
+dt_fmt = '%Y-%m-%d %H:%M:%S'
+formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+ENVIROMENT = os.getenv("ENVIRONMENT")
 # Start functions
+
+"""
+class Client(commands.Bot):""""""
+    def __init__(self):""""""
+        pass"""
 
 
 
@@ -70,7 +93,7 @@ async def on_ready():
 async def main():
     async with bot:
         await load_extensions()
-        await bot.start(token)
+        await bot.run(token, reconnect=True, log_handler=None)
 
 
 
