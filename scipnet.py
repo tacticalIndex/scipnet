@@ -39,8 +39,8 @@ bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
 LOGFILE = os.getenv("LOGFILE")
 logger = logging.getLogger("discord")
-logger.setLevel(logging.DEBUG)
-logger.getLogger("discord.http").setLevel(logging.INFO)
+logging.setLevel(logging.DEBUG)
+logging.getLogger("discord.http").setLevel(logging.INFO)
 
 handler = logging.handlers.RotatingFileHandler(
     filename=LOGFILE,
@@ -51,7 +51,7 @@ handler = logging.handlers.RotatingFileHandler(
 dt_fmt = "%Y-%m-%d %H:%M:%S"
 formatter = logging.Formatter("[{asctime}] [{levelname:<8}] {name}: {message}", dt_fmt, style="{")
 handler.setFormatter(formatter)
-logger.addHandler(handler)
+logging.addHandler(handler)
 
 
 
