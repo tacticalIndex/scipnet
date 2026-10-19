@@ -39,7 +39,7 @@ bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
 LOGFILE = os.getenv("LOGFILE")
 logger = logging.getLogger("discord")
-logging.setLevel(logging.DEBUG)
+logger.setLevel(logging.DEBUG)
 logging.getLogger("discord.http").setLevel(logging.INFO)
 
 handler = logging.handlers.RotatingFileHandler(
