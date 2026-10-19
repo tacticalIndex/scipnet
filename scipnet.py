@@ -37,7 +37,21 @@ DB_URI = os.getenv("MONGODB_URI")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
-# Start functions
+LOGFILE = os.getenv("LOGFILE")
+logger = logging.getLogger("discord")
+logger.setLevel(logging.DEBUG)
+logger.getlogger("discord.http").setLevel(logging.INFO)
+
+handler = logging.handlers.RotatingFileHandler(
+    filename=LOGFILE,
+    encoding="utf-8",
+    maxBytes=32 * 1024 * 1024,  # 32 MiB
+    backupCount=5,  # Keep up to 5 log files
+)
+dt_fmt = "%Y-%m-%d %H:%M:%S"
+formatter = logging.Formatter("[{asctime}] [{levelname:<8}] {name}: {message}", dt_fmt, style="{")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 
 
@@ -73,7 +87,7 @@ async def on_ready():
 async def main():
     async with bot:
         await load_extensions()
-        await bot.start(token)
+        await bot.run(TOKEN, reconnect=True, log_handler=None)
 
 
 
