@@ -36,7 +36,7 @@ TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 DB_URI = os.getenv("MONGODB_URI")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
-logging_channel = 1440554108502151329
+LOGGING_CHANNEL = 1440554108502151329
 
 
 
