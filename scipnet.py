@@ -20,6 +20,7 @@ import logging
 from dotenv import load_dotenv
 from pymongo import AsyncMongoClient
 from pathlib import Path
+from utils.globalLogging import send_log
 
 #from hosting import keep_alive
 
@@ -31,34 +32,12 @@ from utils.mongo import PreferencesManager
 
 #Bot start up!!!
 load_dotenv()
-token = os.getenv("DISCORD_BOT_TOKEN")
-db_uri = os.getenv("MONGODB_URI")
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+DB_URI = os.getenv("MONGODB_URI")
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=":", intents=intents)
 logging_channel = 1440554108502151329
-logger_file = os.getenv("LOGGER_FILE")
-logger = logging.getLogger("discord")
-logger.setLevel(logging.DEBUG)
-logging.getLogger("discord.http").setLevel(logging.WARNING)
-
-handler = logging.handlers.RotatingFileHandler(
-    filename=logger_file,
-    encoding="utf-8",
-    maxBytes=32 * 1024 * 1024,  # 32 MiB
-    backupCount=5,  # Keep up to 5 log files
-)
-dt_fmt = '%Y-%m-%d %H:%M:%S'
-formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', dt_fmt, style='{')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-
-ENVIROMENT = os.getenv("ENVIRONMENT")
 # Start functions
-
-"""
-class Client(commands.Bot):""""""
-    def __init__(self):""""""
-        pass"""
 
 
 
@@ -87,13 +66,14 @@ async def load_extensions():
 async def on_ready():
     latency = round(bot.latency * 1000)
     print(f"Logged in as {bot.user} (ID: {bot.user.id} | Ping: {latency}ms)")
+    send_log(bot, "Bot Status", f"Bot is online! Ping: {latency}ms", LOGGING_CHANNEL, discord.Color.green())
 
 
 
 async def main():
     async with bot:
         await load_extensions()
-        await bot.run(token, reconnect=True, log_handler=None)
+        await bot.start(token)
 
 
 
