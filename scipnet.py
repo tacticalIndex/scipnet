@@ -40,7 +40,7 @@ logging_channel = 1440554108502151329
 LOGFILE = os.getenv("LOGFILE")
 logger = logging.getLogger("discord")
 logger.setLevel(logging.DEBUG)
-logger.getlogger("discord.http").setLevel(logging.INFO)
+logger.getLogger("discord.http").setLevel(logging.INFO)
 
 handler = logging.handlers.RotatingFileHandler(
     filename=LOGFILE,
