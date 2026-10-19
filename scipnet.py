@@ -72,7 +72,7 @@ async def on_ready():
 async def main():
     async with bot:
         await load_extensions()
-        await bot.run(TOKEN, reconnect=True)
+        await bot.start(TOKEN)
 
 
 
